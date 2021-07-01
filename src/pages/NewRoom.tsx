@@ -10,9 +10,6 @@ import logoImg from '../assets/images/logo.svg';
 import '../styles/auth.scss';
 import { useAuth } from '../hooks/useAuth';
 
-CONTINUAR EM 44min 16seg AULA 3
-
-
 export function NewRoom() {
   const history = useHistory();
   const { user } = useAuth();
