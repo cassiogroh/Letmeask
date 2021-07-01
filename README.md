@@ -16,7 +16,7 @@
 
 ## 🧪 Technologies
 
-This project was made by using the following technologies?
+This project was made by using the following technologies:
 
 - [React](https://reactjs.org)
 - [Firebase](https://firebase.google.com/)
@@ -26,12 +26,10 @@ This project was made by using the following technologies?
 
 - Clone this repository and enter the folder `cd Letmeask`
 - Install dependencies using `yarn`
-- Insert [Firebase](https://firebase.google.com/)* credentials on ``.env``
+- Insert [Firebase](https://firebase.google.com/) (with Realtime Database) credentials on ``.env``
 - Run the app by typing `yarn dev`
 
 Now you can access [`localhost:3000`](http://localhost:3000) on your web browser.
-
-* Using Realtime Database.
 
 ## 💻 Project
 
