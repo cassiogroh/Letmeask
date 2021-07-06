@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { FormEvent, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { database } from '../services/firebase';
 import { useAuth } from '../hooks/useAuth';
@@ -19,12 +19,26 @@ interface RoomParams {
 
 export function Room() {
   const [ newQuestion, setNewQuestion ] = useState('');
+  const [ currentUserIsRoomAuthor, setCurrentUserIsRoomAuthor ] = useState(false);
 
   const params = useParams<RoomParams>();
   const roomId = params.id;
 
   const { user } = useAuth();
   const { questions, title } = useRoom(roomId);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    async function getRoomOwnerId() {
+      const authorRef = await database.ref(`rooms/${roomId}/authorId`).get();
+      const authorId = authorRef.val();
+
+      setCurrentUserIsRoomAuthor(authorId === user?.id);
+    }
+
+    getRoomOwnerId();
+  }, [roomId, user?.id]);
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -60,19 +74,41 @@ export function Room() {
     }
   }
 
+  function handleRedirectToAdminView() {
+    history.push(`/admin/rooms/${roomId}`);
+  }
+
+  function handleGoToHomePage() {
+    history.push('/');
+  }
+
   return (
     <div id="page-room">
       <header>
         <div className="content">
-          <img src={logoImg} alt='Letmeask' />
+          <img
+            src={logoImg}
+            alt='Letmeask'
+            onClick={handleGoToHomePage}
+            title='Ir para página inicial'
+          />
           <RoomCode code={roomId} />
         </div>
       </header>
 
       <main>
         <div className="room-title">
-          <h1>Sala {title}</h1>
-          { questions.length && <span>{questions.length} Pergunta(s)</span> }
+          <div>
+            <h1>Sala {title}</h1>
+            { questions && <span>{questions.length} Pergunta(s)</span> }
+          </div>
+
+          {
+            currentUserIsRoomAuthor &&
+            <Button isOutlined onClick={handleRedirectToAdminView}>
+              Ver como admin
+            </Button>
+          }
         </div>
 
         <form onSubmit={handleSendQuestion}>
@@ -101,9 +137,11 @@ export function Room() {
           {
             questions.map(question => (
               <Question
+                key={question.id}
                 content={question.content}
                 author={question.author}
-                key={question.id}
+                isAnswered={question.isAnswered}
+                isHighlighted={question.isHighlighted}
               >
                 <button
                   className={`like-button ${question.likeId ? 'liked' : ''}`}

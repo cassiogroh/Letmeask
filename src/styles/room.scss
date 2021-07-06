@@ -12,6 +12,7 @@
 
       >img {
         max-height: 45px;
+        cursor: pointer;
       }
 
       > div {
@@ -32,7 +33,12 @@
     .room-title {
       margin: 32px 0 24px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
+
+      > div {
+        display: flex;
+      }
 
       h1 {
         font-family: 'Poppins', sans-serif;
